@@ -1,29 +1,45 @@
 echo "Welcome to Flip Coin Combination Problem"
 
-read -p "Enter the number of times to flip a singlet combination:" num
-declare -A singletFlip
+read -p "Enter number of times to flip a combination:" no_of_flips
+declare -A doublet_frequency=( 
 
-singletFlip[H]=0
-singletFlip[T]=0
+                                [HH]=0
+                                [HT]=0
+                                [TH]=0
+                                [TT]=0
 
-for(( flip = 1; flip <= num; flip++ ))
+                              )
+
+for(( flip = 1; flip <= no_of_flips; flip++ ))
 do
-    echo -n "Flip number $flip is "
-    (( count = RANDOM%2 ))
-    case $count in
-        0)
-            echo "Heads"
-            (( singletFlip[H]++ ))
+    echo -n "Flip-$flip is "
+    (( coin_1 = RANDOM % 2 ))
+    (( coin_2 = RANDOM % 2 ))
+
+    case $coin_1$coin_2 in 
+        00)
+            echo "Heads Heads"
+            (( doublet_frequency[HH]++ )) 
             ;;
-        1)
-            echo "Tails"
-            (( singletFlip[T]++ ))
+        01)
+            echo "Heads Tails"
+            (( doublet_frequency[HT]++ ))
+            ;;
+        10)
+            echo "Tails Heads"
+            (( doublet_frequency[TH]++ ))
+            ;;
+        11)
+            echo "Tails Tails"
+            (( doublet_frequency[TT]++ ))
+            ;;
     esac
 done
 
-for combination in ${!singletFlip[@]}
+for combination in ${!doublet_frequency[@]}
 do
-    percent=$(( ${singletFlip[$combination]}  * 100 / num ))
-    singletFlip[$combination]=$percent
-    echo "The percentage of $combination is ${singletFlip[$combination]}%"
+    #update count values  with corresponding percentage
+    percentage=$(( ${doublet_frequency[$combination]}  * 100 / no_of_flips ))
+    doublet_frequency[$combination]=$percentage
+    echo "percentage of $combination is ${doublet_frequency[$combination]}%"   
 done
